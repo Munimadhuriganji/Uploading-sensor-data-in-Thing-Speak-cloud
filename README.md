@@ -1,15 +1,14 @@
-# Uploading temperature sensor data in Thing Speak cloud
-
+## NAME:GANJI MUNI MADHURI
+# REG NO:212223230060
+# EX- 03 Uploading temperature sensor data in Thing Speak cloud
 # AIM:
 To monitor the temperature sensor data in the Thing speak using an ESP32 controller.
-
 # Apparatus required:
 ESP32 Controller  </br>
 Temperature Sensor </br>
 Power supply </br>
 Connecting wires </br>
 Bread board </br>
-
 # PROCEDURE:
 ## Arduino IDE
 Step1:Open the Arduino IDE </br>
@@ -27,7 +26,6 @@ Step12 Press the boot button in ESP32 and then press and release the reset butto
 Step13 Check the output in the cloud </br>
 
 ## Thingspeak
-
 Step1 Create a ThingSpeak Account </br>
 Step2 Log in to your ThingSpeak account </br>
 Step3 Create a new channel by navigating to "Channels" and clicking on "New Channel." </br>
@@ -37,25 +35,17 @@ Step6 Execute your program to send the sensor value to ThingSpeak </br>
 Step7 Check your ThingSpeak channel to verify that the sensor value has been updated </br>
 
 # THEORY:
-
 ### What is IoT?
-
 Internet of Things (IoT) describes an emerging trend where a large number of embedded devices (things) are connected to the Internet. These connected devices communicate with people and other things and often provide sensor data to cloud storage and cloud computing resources where the data is processed and analyzed to gain important insights. Cheap cloud computing power and increased device connectivity is enabling this trend.IoT solutions are built for many vertical applications such as environmental monitoring and control, health monitoring, vehicle fleet monitoring, industrial monitoring and control, and home automation
 
 ![image](https://user-images.githubusercontent.com/71547910/235334044-c01d4261-d46f-4f62-b07f-72a7b6fce5d5.png)
-
 ### Sending Data to Cloud with ESP32 and ThingSpeak
-
 ThingSpeak is an Internet of Things (IoT) analytics platform that allows users to collect, analyze, and visualize data from sensors or devices connected to the Internet. It is a cloud-based platform that provides APIs for storing and retrieving data, as well as tools for data analysis and visualization.The Internet of Things ( or IoT) is a network of interconnected computing devices such as digital machines, automobiles with built-in sensors, or humans with unique identifiers and the ability to communicate data over a network without human intervention.Hello readers, I hope you all are doing great. In this tutorial, we will learn how to send sensor readings from ESP32 to the ThingSpeak cloud. Here we will use the ESP32’s internal sensor like hall-effect sensor and temperature sensor to observe the data and then will share that data cloud.
-
 ### What is ThingSpeak?
-
 ![image](https://user-images.githubusercontent.com/71547910/235333909-29d2e831-9fe5-4afd-b18d-f1e5d2e32518.png)
 
 It is an open data platform for IoT (Internet of Things). ThingSpeak is a web service operated by MathWorks where we can send sensor readings/data to the cloud. We can also visualize and act on the data (calculate the data) posted by the devices to ThingSpeak. The data can be stored in either private or public channels.ThingSpeak is frequently used for internet of things prototyping and proof of concept systems that require analytics.
-
 ### Features Of ThingSpeak
-
 ThingSpeak service enables users to share analyzed data through public channels: </br>
 ThingSpeak allows professionals to prepare and analyze data for their businesses: </br>
 ThingSpeak updates various ThingSpeak channels using MQTT and REST APIs: </br>
@@ -68,15 +58,77 @@ Prototype and build IoT systems without setting up servers or developing web sof
 Automatically act on your data and communicate using third-party services like Twilio® or Twitter®</br>
 
 ![image](https://user-images.githubusercontent.com/71547910/235334056-3ba9579f-2f62-43b1-a714-8fde6cf9ef32.png)
-
-
 # PROGRAM:
+```
+#include "ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+//#include <OneWire.h>
+//#include <DallasTemperature.h>
 
+char ssid[] = "Madhu"; // Your WiFi SSID
+char pass[] = "madhu@27";  // Your WiFi password
+
+const int out = 23; // Pin for temperature sensor data
+long T;
+float temperature = 0; // Initialize temperature
+WiFiClient client;
+DHT dht(23, DHT11);
+
+unsigned long myChannelField = 2709727; // Channel ID
+const int TemperatureField = 1;          // Field for temperature data
+const int HumidityField = 2;          // Field for humidity data
+
+const char* myWriteAPIKey = "1GDC0HRAS9798WC8"; // Your write API Key
+
+// Temperature sensor setup
+void setup() {
+  Serial.begin(115200);
+  pinMode(out, INPUT); // Set pin mode to input for temperature sensor
+  ThingSpeak.begin(client);
+  dht.begin();
+  delay(1000);
+ }
+
+void loop() 
+{
+  if (WiFi.status() != WL_CONNECTED) 
+  {
+Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    while (WiFi.status() != WL_CONNECTED) 
+    {
+      WiFi.begin(ssid, pass);
+      Serial.print(".");
+      delay(5000);
+    }
+    Serial.println("\nConnected.");
+  }
+
+  // Read temperature
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+  
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  Serial.print("Humidity ");
+Serial.print(humidity);
+  Serial.println(" g.m-3");
+// Write temperature to ThingSpeak
+  ThingSpeak.writeField(myChannelField, TemperatureField, temperature, myWriteAPIKey); // Write temperature to ThingSpeak
+  ThingSpeak.writeField(myChannelField, HumidityField, humidity, myWriteAPIKey); // Write humidity to ThingSpeak
+delay(100);
+}
+```
 # CIRCUIT DIAGRAM:
-
+![WhatsApp Image 2024-10-30 at 08 23 21_7a99af33](https://github.com/user-attachments/assets/0d29c089-4310-4290-89a2-bcbcf225a261)
 # OUTPUT:
-
+# THINGSPEAK
+![WhatsApp Image 2024-10-30 at 08 13 14_ad621e54](https://github.com/user-attachments/assets/dd4390b8-dbc3-4e0c-9168-9bff57b33c59)
+# SERIAL MONITOR
+![WhatsApp Image 2024-10-30 at 08 26 35_68f44452](https://github.com/user-attachments/assets/8cbf0ad2-aaa0-49f7-8f20-a9e5fdffb0a7)
 # RESULT:
-
 Thus the temperature sensor values are updated in the Thing speak using ESP32 controller.
 
